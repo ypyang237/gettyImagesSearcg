@@ -8,22 +8,45 @@ imgBtn.addEventListener('click', function() {
 
   var userInput = document.getElementById('target').value;
 
-  var imgBtn = new XMLhttpRequest();
+  var imgBtn = new XMLHttpRequest();
+  imgBtn.open('GET', "https://api.gettyimages.com/v3/search/images?phrase=" + userInput);
+  imgBtn.setRequestHeader('Api-Key', apiKey );
   imgBtn.addEventListener('load', loadImage);
-  imgBtn.open('GET', "https://api.gettyimages.com/v3/search/images?fields=id,title,thumb,referral_destinations&sort_order=best&phrase=puppy");
-  imgBtn.setRequestHeader('Api-Key:', );
   imgBtn.send();
 });
 
   function loadImage() {
-
+    console.log(this);
     var myObject = JSON.parse(this.responseText);
 
+    var tempContainer = document.createDocumentFragment();
     var container = document.getElementById('container');
 
-    container.innerHTML = myObject;
+    for(var i = 1; i < 25; i++) {
+      var article = document.createElement('article');
 
-    console.log('LOADED');
+      var title = document.createElement('div');
+      title.setAttribute('id', 'title' + i);
+      myTitle = myObject.images[i].title;
+      title.innerHTML= myTitle;
+      article.appendChild(title);
+
+      var image = document.createElement('img');
+      myImage = myObject.images[i].display_sizes[0].uri;
+      image.setAttribute('src', myImage);
+      article.appendChild(image);
+
+
+
+
+
+      tempContainer.appendChild(article);
+    }
+
+    container.appendChild(tempContainer);
+
+    console.log(myObject.images[0].display_sizes[0].uri);
+
 
 
   }
